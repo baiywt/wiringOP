@@ -36,6 +36,12 @@
 
 #define	MAX_PINS	64
 
+#if defined(__ANDROID__)
+static inline int pthread_cancel(pthread_t thread) {
+  return pthread_kill(thread, SIGUSR1);
+}
+#endif
+
 // The PWM Frequency is derived from the "pulse time" below. Essentially,
 //	the frequency is a function of the range and this pulse time.
 //	The total period will be range * pulse time in µS, so a pulse time

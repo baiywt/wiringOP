@@ -74,6 +74,11 @@
 #include "softPwm.h"
 #include "softTone.h"
 
+#if defined(__ANDROID__)
+#include <cutils/log.h>
+#include <cutils/properties.h>
+#endif
+
 #include "wiringPi.h"
 #include "../version.h"
 
@@ -1555,6 +1560,12 @@ void piBoardId (int * model)
 	char revision[40];
 	unsigned int i = 0;
 
+#if defined(__ANDROID__)
+	char value[PROPERTY_VALUE_MAX];
+	property_get("ro.product.model", value, NULL);
+	sprintf(line, "BOARD=%s", value);
+	ALOGD("piBoardId: %s", line);
+#else
 	if ((cpuFd = fopen ("/etc/orangepi-release", "r")) == NULL)
 		if ((cpuFd = fopen ("/etc/armbian-release", "r")) == NULL)
 			piGpioLayoutOops ("Unable to open /etc/orangepi-release or /etc/armbian-release.");
@@ -1564,6 +1575,7 @@ void piBoardId (int * model)
 		break ;
 
 	fclose (cpuFd) ;
+#endif
 
 	if (strncmp (line, "BOARD=", 6) != 0)
 		piGpioLayoutOops ("No \"Revision\" line") ;
@@ -2855,6 +2867,9 @@ int wiringPiSetup (void)
 	//	Try /dev/mem. If that fails, then 
 	//	try /dev/gpiomem. If that fails then game over.
 	if ((fd = open ("/dev/mem", O_RDWR | O_SYNC | O_CLOEXEC)) < 0){
+#if defined(__ANDROID__)
+		ALOGD("wiringPiSetup: open /dev/mem: %s", strerror(errno));
+#endif
 		if ((fd = open ("/dev/gpiomem", O_RDWR | O_SYNC | O_CLOEXEC) ) >= 0){	// We're using gpiomem
 			piGpioBase   = 0 ;
 			usingGpioMem = TRUE ;

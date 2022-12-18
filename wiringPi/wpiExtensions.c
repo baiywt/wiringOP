@@ -413,18 +413,18 @@ static int doExtensionPcf8574 (char *progName, int pinBase, char *params)
 
 static int doExtensionAds1115 (char *progName, int pinBase, char *params)
 {
-  int i2c ;
+  //int i2c ;
 
-  if ((params = extractInt (progName, params, &i2c)) == NULL)
-    return FALSE ;
+  //if ((params = extractInt (progName, params, &i2c)) == NULL)
+  //  return FALSE ;
 
-  if ((i2c < 0x03) || (i2c > 0x77))
-  {
-    verbError ("%s: i2c address (0x%X) out of range", progName, i2c) ;
-    return FALSE ;
-  }
+  //if ((i2c < 0x03) || (i2c > 0x77))
+  //{
+  //  verbError ("%s: i2c address (0x%X) out of range", progName, i2c) ;
+  //  return FALSE ;
+  //}
 
-  ads1115Setup (pinBase, i2c) ;
+  //ads1115Setup (pinBase, i2c) ;
 
   return TRUE ;
 }
@@ -465,8 +465,8 @@ static int doExtensionPcf8591 (char *progName, int pinBase, char *params)
 
 static int doExtensionPseudoPins (UNU char *progName, int pinBase, UNU char *params)
 {
-  pseudoPinsSetup (pinBase) ;
-
+//  pseudoPinsSetup (pinBase) ;
+//
   return TRUE ;
 }
 
@@ -546,19 +546,19 @@ static int doExtensionRht03 (char *progName, int pinBase, char *params)
 
 static int doExtensionMax31855 (char *progName, int pinBase, char *params)
 {
-  int spi ;
-
-  if ((params = extractInt (progName, params, &spi)) == NULL)
-    return FALSE ;
-
-  if ((spi < 0) || (spi > 1))
-  {
-    verbError ("%s: SPI channel (%d) out of range", progName, spi) ;
-    return FALSE ;
-  }
-
-  max31855Setup (pinBase, spi) ;
-
+//  int spi ;
+//
+//  if ((params = extractInt (progName, params, &spi)) == NULL)
+//    return FALSE ;
+//
+//  if ((spi < 0) || (spi > 1))
+//  {
+//    verbError ("%s: SPI channel (%d) out of range", progName, spi) ;
+//    return FALSE ;
+//  }
+//
+//  max31855Setup (pinBase, spi) ;
+//
   return TRUE ;
 }
 
@@ -779,47 +779,48 @@ static int doExtensionDrcS (char *progName, int pinBase, char *params)
 
 static int doExtensionDrcNet (char *progName, int pinBase, char *params)
 {
-  int pins ;
-  char *ipAddress, *port, *password ;
-  char pPort [1024] ;
+  //int pins ;
+  //char *ipAddress, *port, *password ;
+  //char pPort [1024] ;
 
-  if ((params = extractInt (progName, params, &pins)) == NULL)
-    return FALSE ;
+  //if ((params = extractInt (progName, params, &pins)) == NULL)
+  //  return FALSE ;
 
-  if ((pins < 1) || (pins > 1000))
-  {
-    verbError ("%s: pins (%d) out of range (2-1000)", progName, pins) ;
-    return FALSE ;
-  }
-  
-  if ((params = extractStr (progName, params, &ipAddress)) == NULL)
-    return FALSE ;
+  //if ((pins < 1) || (pins > 1000))
+  //{
+  //  verbError ("%s: pins (%d) out of range (2-1000)", progName, pins) ;
+  //  return FALSE ;
+  //}
+  //
+  //if ((params = extractStr (progName, params, &ipAddress)) == NULL)
+  //  return FALSE ;
 
-  if (strlen (ipAddress) == 0)
-  {
-    verbError ("%s: ipAddress required", progName) ;
-    return FALSE ;
-  }
+  //if (strlen (ipAddress) == 0)
+  //{
+  //  verbError ("%s: ipAddress required", progName) ;
+  //  return FALSE ;
+  //}
 
-  if ((params = extractStr (progName, params, &port)) == NULL)
-    return FALSE ;
+  //if ((params = extractStr (progName, params, &port)) == NULL)
+  //  return FALSE ;
 
-  if (strlen (port) == 0)
-  {
-    sprintf (pPort, "%d", DEFAULT_SERVER_PORT) ;
-    port = pPort ;
-  }
+  //if (strlen (port) == 0)
+  //{
+  //  sprintf (pPort, "%d", DEFAULT_SERVER_PORT) ;
+  //  port = pPort ;
+  //}
 
-  if ((params = extractStr (progName, params, &password)) == NULL)
-    return FALSE ;
+  //if ((params = extractStr (progName, params, &password)) == NULL)
+  //  return FALSE ;
 
-  if (strlen (password) == 0)
-  {
-    verbError ("%s: password required", progName) ;
-    return FALSE ;
-  }
+  //if (strlen (password) == 0)
+  //{
+  //  verbError ("%s: password required", progName) ;
+  //  return FALSE ;
+  //}
 
-  return drcSetupNet (pinBase, pins, ipAddress, port, password) ;
+  //return drcSetupNet (pinBase, pins, ipAddress, port, password) ;
+  return 0;
 }
 
 
