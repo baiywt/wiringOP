@@ -75,8 +75,12 @@
 #include "softTone.h"
 
 #if defined(__ANDROID__)
-#include <cutils/log.h>
-#include <cutils/properties.h>
+#include <android/log.h>
+#include <sys/system_properties.h>
+#define LOG_TAG "wiringPi"
+#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
+#define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
+#define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
 #endif
 
 #include "wiringPi.h"
@@ -1561,10 +1565,10 @@ void piBoardId (int * model)
 	unsigned int i = 0;
 
 #if defined(__ANDROID__)
-	char value[PROPERTY_VALUE_MAX];
-	property_get("ro.product.model", value, NULL);
+	char value[PROP_VALUE_MAX];
+    __system_property_get("ro.product.model", value);
 	sprintf(line, "BOARD=%s", value);
-	ALOGD("piBoardId: %s", line);
+	LOGD("piBoardId: %s", line);
 #else
 	if ((cpuFd = fopen ("/etc/orangepi-release", "r")) == NULL)
 		if ((cpuFd = fopen ("/etc/armbian-release", "r")) == NULL)
@@ -2868,7 +2872,7 @@ int wiringPiSetup (void)
 	//	try /dev/gpiomem. If that fails then game over.
 	if ((fd = open ("/dev/mem", O_RDWR | O_SYNC | O_CLOEXEC)) < 0){
 #if defined(__ANDROID__)
-		ALOGD("wiringPiSetup: open /dev/mem: %s", strerror(errno));
+		LOGD("wiringPiSetup: open /dev/mem: %s", strerror(errno));
 #endif
 		if ((fd = open ("/dev/gpiomem", O_RDWR | O_SYNC | O_CLOEXEC) ) >= 0){	// We're using gpiomem
 			piGpioBase   = 0 ;

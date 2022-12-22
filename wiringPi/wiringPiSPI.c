@@ -36,6 +36,13 @@
 
 #include "wiringPiSPI.h"
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define LOG_TAG "wiringPi"
+#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args)
+#define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, fmt, ##args)
+#define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args)
+#endif
 
 // The SPI bus parameters
 //	Variables as they need to be passed as pointers later on
@@ -43,8 +50,8 @@
 static const uint8_t     spiBPW   = 8 ;
 static const uint16_t    spiDelay = 0 ;
 
-static uint32_t    spiSpeeds [2] ;
-static int         spiFds [2] ;
+static uint32_t    spiSpeeds [5] ;
+static int         spiFds [5] ;
 
 
 /*
@@ -86,6 +93,10 @@ int wiringPiSPIDataRW (int channel, unsigned char *data, int len)
   spi.speed_hz      = spiSpeeds [channel] ;
   spi.bits_per_word = spiBPW ;
 
+#if defined(__ANDROID__)
+    LOGI("wiringPiSPIDataRW ==> speed: %d, fd: %d", spi.speed_hz, spiFds [channel]);
+#endif
+
   return ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi) ;
 }
 
@@ -107,17 +118,27 @@ int wiringPiSPISetupMode (int channel, int port, int speed, int mode)
   //mode    &= 3;
   //channel &= 7;
 
-  static char spidev[14];
+  static char spidev[15];
 
   getDevice(spidev, channel, port);
-  printf("Opening device %s\n", spidev); 
+  printf("Opening device %s", spidev);
+#if defined(__ANDROID__)
+  LOGI("Opening device %s\n", spidev);
+#endif
 
-  if ((fd = open (spidev, O_RDWR)) < 0)
+  if ((fd = open (spidev, O_RDWR)) < 0){
+#if defined(__ANDROID__)
+    LOGI("Unable to open SPI device: %s", strerror (errno));
+#endif
     return wiringPiFailure (WPI_ALMOST, "Unable to open SPI device: %s\n", strerror (errno)) ;
+  }
 
   spiSpeeds [channel] = speed ;
   spiFds    [channel] = fd ;
 
+#if defined(__ANDROID__)
+    LOGI("speed: %d, fd: %d", speed, fd);
+#endif
 // Set SPI parameters.
 
   if (ioctl (fd, SPI_IOC_WR_MODE, &mode)            < 0)
